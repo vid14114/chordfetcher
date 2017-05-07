@@ -1,5 +1,7 @@
 package service;
 
+import javafx.application.Platform;
+import javafx.scene.web.WebView;
 import org.codejargon.feather.Feather;
 
 import javax.inject.Singleton;
@@ -9,9 +11,17 @@ import java.nio.file.*;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 @Singleton
-public class SongWatcher {
+public class SongWatcher implements Runnable {
 
-    public void startSongWatcher(Feather feather) {
+    private Feather feather;
+    private WebView webView;
+
+    public SongWatcher(Feather feather, WebView webView) {
+        this.feather = feather;
+        this.webView = webView;
+    }
+
+    public void startSongWatcher() {
         try {
             WatchService watcher = FileSystems.getDefault().newWatchService();
             Path dir = Paths.get(System.getProperty("user.home"), "Documents", "amip");
@@ -26,7 +36,13 @@ public class SongWatcher {
                     if(changed.endsWith("foobar-playing.txt") && (i = (i+1) % 2) == 1) {
                         SongExtractor songExtractor = feather.instance(SongExtractor.class);
                         ChordFetcher chordFetcher = feather.instance(ChordFetcher.class);
-                        chordFetcher.fetchChords(songExtractor.getCurrentSong(Paths.get(dir.toString(), changed.toString())));
+                        String link = chordFetcher.fetchChords(songExtractor.getCurrentSong(Paths.get(dir.toString(), changed.toString())));
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                webView.getEngine().loadContent(link);
+                            }
+                        });
                     }
 
                     boolean valid = wk.reset();
@@ -41,5 +57,10 @@ public class SongWatcher {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run() {
+        startSongWatcher();
     }
 }

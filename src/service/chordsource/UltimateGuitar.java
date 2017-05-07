@@ -1,5 +1,6 @@
 package service.chordsource;
 
+import javafx.scene.web.WebView;
 import model.Chords;
 import model.ImmutableChords;
 import model.Song;
@@ -20,6 +21,7 @@ import java.util.*;
 public class UltimateGuitar implements Chordsource {
 
     private static final Map<Integer, String> searchQueries;
+
     static {
         Map<Integer, String> querys = new TreeMap<>();
         querys.put(1, "https://www.ultimate-guitar.com/search.php?band_name=*artist*&song_name=*title*&type%5B2%5D=300&rating%5B4%5D=5");
@@ -71,15 +73,16 @@ public class UltimateGuitar implements Chordsource {
             try {
                 Document chordHtml = Jsoup.connect(bestChordsOptional.get().link()).get();
                 Element printElement = chordHtml.getElementById("print_link");
-                Element contetElement = chordHtml.getElementById("cont");
-                String printLink = "https://tabs.ultimate-guitar.com"+printElement.attr("href");
-                System.out.println(printLink);
-                Desktop.getDesktop().browse(new URI(printLink));
+                Element contentElement = chordHtml.getElementById("cont");
+                //System.out.println(contentElement.toString());
+                //String printLink = "https://tabs.ultimate-guitar.com"+printElement.attr("href");
+                //Desktop.getDesktop().browse(new URI(printLink));
                 //Desktop.getDesktop().browse(new URI(bestChordsOptional.get().link()));
+                return contentElement.toString();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
+            /*} catch (URISyntaxException e) {
+                e.printStackTrace();*/
             }
         }
         else
