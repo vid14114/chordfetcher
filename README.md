@@ -1,19 +1,3 @@
-Instructions
+If your music player can export the current playing song to a text file with the format %artist% - %title%, you can use this tool to watch that text file for changes and automatically pull the best rated chords from ulitmate-guitar.com and show them in plain view without all the clutter around.
 
-1) AMIP for foobar
-
-2) AMIP configurator
-
-	-) Andere Integrationen -> Datei/Email
-	
-	-) Aktivieren, Pfad auswählen (%user.home%/Documents/amip/foobar-playing.txt)
-	
-	-) Abspielen: %s
-	
-3) Foobar2000
-
-	-) Preferences -> Tools -> AMIP Wrapper
-	
-	-) AMIP %s format: %artist% - %title%
-	
-4) Start chordfetcher, it will watch for changes in the above path and open the best rated chords in the default browser
+Currently the path to the text file is hardcoded as %user.home%/Documents/amip/foobar-playing.txt
